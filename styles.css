@@ -491,3 +491,13 @@ table.kv td{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
   .toolbar-left,.toolbar-right{gap:6px}
   .chip-btn{font-size:12.5px;padding:5px 11px}
 }
+
+/* 存储用量面板（管理员） */
+.storage{margin:-6px 0 18px;padding:10px 14px}
+.storage-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.storage-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3)}
+.storage-text{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
+.storage-bar{margin-top:7px;height:6px;background:rgba(42,36,31,.09);border:1px solid var(--line-2);overflow:hidden}
+.storage-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green-2),var(--green));transition:width .3s ease}
+.storage-bar i.warn{background:linear-gradient(90deg,#c08a2a,var(--red))}
+.storage-note{margin:6px 0 0;font-size:11.5px;color:var(--ink-3);line-height:1.6}

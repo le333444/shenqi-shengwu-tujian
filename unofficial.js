@@ -25,6 +25,9 @@
   var loginMode = 'admin';
   var busy = false;
 
+  var storageBox = el('storage'), storageText = el('storage-text');
+  var storageFill = el('storage-fill'), storageNote = el('storage-note');
+
   /* ---------- 网络 ---------- */
   async function api(path, opts) {
     opts = opts || {};
@@ -138,6 +141,36 @@
     pill.className = 'status-pill offline';
   }
 
+  /* ---------- 存储用量（管理员） ---------- */
+  function fmtBytes(n) {
+    if (!isFinite(n) || n < 0) return '—';
+    if (n < 1024) return n + ' B';
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+    if (n < 1024 * 1024 * 1024) return (n / 1024 / 1024).toFixed(2) + ' MB';
+    return (n / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+  }
+
+  async function loadStorage() {
+    if (role !== 'admin') { storageBox.hidden = true; return; }
+    storageBox.hidden = false;
+    try {
+      var d = await api('/api/storage');
+      var pct = Math.max(0, Math.min(100, Number(d.percent) || 0));
+      storageFill.style.width = pct + '%';
+      storageFill.className = pct >= 85 ? 'warn' : '';
+      storageText.textContent =
+        fmtBytes(d.usedBytes) + ' / ' + fmtBytes(d.quotaBytes) +
+        ' · 剩余 ' + fmtBytes(d.remainingBytes) + '（已用 ' + pct + '%）';
+      storageNote.textContent =
+        '图片 ' + d.images + ' 张 · 投稿 ' + d.posts + ' 条 · 免费额度为 D1 数据库 500 MB；' +
+        '这里是按实际数据大小估算，不含数据库文件与索引的内部开销。';
+    } catch (e) {
+      storageFill.style.width = '0%';
+      storageText.textContent = '读取失败：' + e.message;
+      storageNote.textContent = e.status === 401 ? '登录已过期，请重新进入管理员模式。' : '';
+    }
+  }
+
   /* ---------- 数据 ---------- */
   async function loadAll() {
     try {
@@ -200,18 +233,21 @@
       switchWrap.hidden = false;
       openToggle.checked = isOpen;
       btnLogout.hidden = false;
+      loadStorage();
     } else if (role === 'submit') {
       btnAdmin.hidden = true;
       btnSubmit.hidden = true;
       who.hidden = false; who.textContent = '投稿模式';
       switchWrap.hidden = true;
       btnLogout.hidden = false;
+      storageBox.hidden = true;
     } else {
       btnAdmin.hidden = false;
       btnSubmit.hidden = false;
       who.hidden = true;
       switchWrap.hidden = true;
       btnLogout.hidden = true;
+      storageBox.hidden = true;
     }
   }
 
@@ -294,6 +330,7 @@
       fPreview.hidden = true;
       introCount.textContent = '0 / 800';
       await loadAll();
+      loadStorage();
       toast('投稿成功，已出现在下面', 'ok');
     } catch (e) {
       if (e.status === 403 && e.code === 'closed') { toast('投稿已关闭', 'warn'); closeForm(); loadAll(); }
@@ -313,6 +350,7 @@
     try {
       await api('/api/posts/' + id, { method: 'DELETE' });
       await loadAll();
+      loadStorage();
       toast('已删除', 'ok');
     } catch (e) {
       toast('删除失败：' + e.message, 'warn');
