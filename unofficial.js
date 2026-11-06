@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var API = window.ZOO_API_BASE || 'https://zoo-api.shenqi-zoo.workers.dev';
+  var API = window.ZOO_API_BASE || 'https://zoo-api.pages.dev';
 
   var el = function (id) { return document.getElementById(id); };
   var postsBox = el('posts'), emptyBox = el('empty'), pill = el('status-pill');
