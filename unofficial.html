@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>非官方物种 ｜ 神奇生物图鉴 · 新华动物园</title>
+<meta name="description" content="民间投稿的非官方物种档案：参观者自行提交，未经鉴定。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f4d3a'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='%23f6f2e8' font-family='serif'%3E%E9%B8%AD%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="topnav" aria-label="图鉴导航">
+  <div class="wrap topnav-inner">
+    <a class="brand" href="index.html">神奇生物图鉴 <em>／ XINHUA ZOO FIELD CATALOG</em></a>
+    <div class="tabs">
+      <a class="tab" href="index.html">李氏鸭狼</a>
+      <a class="tab" href="nieldoron.html">尼尔多龙（蛋）</a>
+      <a class="tab is-active" href="unofficial.html" aria-current="page">非官方物种</a>
+    </div>
+  </div>
+</nav>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <span class="org">新华动物园 · 非官方物种档案 <b>民间</b></span>
+    <span class="plate">未经鉴定 · 编号 <b>UNOFFICIAL</b></span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="hero-main">
+      <p class="kicker">民间投稿 ／ UNOFFICIAL SPECIES</p>
+      <h1>非官方物种</h1>
+      <p class="namers">—— 由参观者自行提交。它们可能不存在，也可能只是没被看见。</p>
+    </div>
+    <div class="seal" aria-hidden="true"><span>民间</span><span>投稿</span></div>
+  </section>
+
+  <!-- 左上角：管理员 / 投稿 -->
+  <section class="card toolbar" id="toolbar">
+    <div class="toolbar-left">
+      <button class="chip-btn" id="btn-admin" type="button">管理员</button>
+      <button class="chip-btn" id="btn-submit" type="button">投稿</button>
+      <span class="who" id="who" hidden></span>
+    </div>
+    <div class="toolbar-right">
+      <span class="status-pill" id="status-pill">投稿状态：读取中…</span>
+      <label class="switch" id="switch-wrap" hidden>
+        <input type="checkbox" id="open-toggle">
+        <span>投稿开关</span>
+      </label>
+      <button class="chip-btn ghost" id="btn-logout" type="button" hidden>退出</button>
+    </div>
+  </section>
+
+  <p class="feed-note" id="feed-note" hidden></p>
+
+  <section class="post-grid" id="posts" aria-live="polite"></section>
+  <p class="empty" id="empty" hidden>还没有投稿。第一条留给谁？</p>
+
+  <footer class="foot">
+    <p class="disclaimer"><b>说明：</b>本栏内容由参观者自行提交，未经任何鉴定，不代表本园立场。所有「非官方物种」均为民间想象，请勿据此引用、投稿学术期刊或申报课题。</p>
+    <p class="foot-line">新华动物园 · 非官方物种档案 ｜ 民间投稿 · 未经鉴定</p>
+  </footer>
+
+</main>
+
+<!-- 登录弹窗 -->
+<div class="modal" id="modal-login" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <h3 id="login-title">管理员登录</h3>
+    <p class="modal-sub" id="login-sub">请输入密码</p>
+    <label class="field">
+      <span>密码</span>
+      <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••">
+    </label>
+    <p class="field-err" id="login-err" hidden></p>
+    <div class="modal-actions">
+      <button class="chip-btn ghost" type="button" data-close="1">取消</button>
+      <button class="chip-btn primary" id="login-go" type="button">进入</button>
+    </div>
+  </div>
+</div>
+
+<!-- 投稿弹窗 -->
+<div class="modal" id="modal-form" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card wide" role="dialog" aria-modal="true" aria-labelledby="form-title">
+    <h3 id="form-title">提交一个非官方物种</h3>
+    <p class="modal-sub">请如实填写你想象中它存在的样子。</p>
+
+    <form id="post-form" novalidate>
+      <div class="grid-2-fields">
+        <label class="field">
+          <span>物种名称 <b>*</b></span>
+          <input id="f-name" type="text" maxlength="40" placeholder="例如：九崒山夜啼兽">
+        </label>
+        <label class="field">
+          <span>提供人 <b>*</b></span>
+          <input id="f-contributor" type="text" maxlength="40" placeholder="你的名字或化名">
+        </label>
+      </div>
+
+      <label class="field">
+        <span>物种介绍 <b>*</b></span>
+        <textarea id="f-intro" rows="4" maxlength="800" placeholder="它长什么样、在哪出现、有什么习性……"></textarea>
+        <small class="counter" id="intro-count">0 / 800</small>
+      </label>
+
+      <label class="field">
+        <span>图片（可选）</span>
+        <input id="f-image" type="file" accept="image/jpeg,image/png,image/webp">
+        <small class="hint">会自动压缩到长边 1200 像素、约 1 MB 以内。</small>
+        <img id="f-preview" class="thumb" alt="" hidden>
+      </label>
+
+      <p class="field-err" id="form-err" hidden></p>
+
+      <div class="modal-actions">
+        <button class="chip-btn ghost" type="button" data-close="1">取消</button>
+        <button class="chip-btn primary" id="form-go" type="submit">提交</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="unofficial.js"></script>
+</body>
+</html>
